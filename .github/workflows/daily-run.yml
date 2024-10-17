@@ -1,0 +1,27 @@
+name: Daily Ballerina Run
+
+on:
+  schedule:
+    # Runs at 19:30 UTC every day
+    - cron: "30 19 * * *"
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  run_ballerina:
+    name: Run Ballerina main.bal and Tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # Only on the main branch
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Ballerina
+        uses: ballerina-platform/setup-ballerina@main
+        with:
+          version: "2201.10.1"
+
+      - name: Run Ballerina Tests
+        run: bal test
+
+      - name: Run Ballerina Script
+        run: bal run main.bal
